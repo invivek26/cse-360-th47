@@ -1,0 +1,5 @@
+Project: Business Project
+Life Cycle: Planning
+Effort Category: Plans
+Type of Effort: Conceptual Design Plan
+
