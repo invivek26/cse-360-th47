@@ -35,6 +35,10 @@ public class planningPoker extends Stage {
                 List<Log_DataStructure.LogEntry> logs = Log_DataStructure.getLogs();
                 userStoriesList.setItems(FXCollections.observableArrayList(logs));
                 userStoriesList.setCellFactory(new LogEntryCellFactory());
+                
+                List<Log_DataStructure.LogEntry> historicalData = Log_DataStructure.getHistoricalLogs();
+                dataList.setItems(FXCollections.observableArrayList(historicalData));
+                dataList.setCellFactory(new LogEntryCellFactory());
             });
 
             // Add event handler for updateButton
@@ -60,20 +64,24 @@ public class planningPoker extends Stage {
         // Update the story points for the first log entry
         List<Log_DataStructure.LogEntry> logs = Log_DataStructure.getLogs();
         if (!logs.isEmpty()) {
-            Log_DataStructure.LogEntry firstLog = logs.get(0);
-            firstLog.setStoryPoints(userStoryPoints);
-
-            // Move the first log entry from userStoriesList to dataList
-            userStoriesList.getItems().remove(firstLog);
-            dataList.getItems().add(firstLog);
-
-            // Remove the first log entry from the list
-            logs.remove(0);
+//            Log_DataStructure.LogEntry firstLog = logs.get(0);
+//            firstLog.setStoryPoints(userStoryPoints);
+//
+//            // Move the first log entry from userStoriesList to dataList
+//            userStoriesList.getItems().remove(firstLog);
+//            dataList.getItems().add(firstLog);
+//
+//            // Remove the first log entry from the list
+//            logs.remove(0);
+        	
+        	Log_DataStructure.updateLog(userStoryPoints);
         }
 
         // Refresh userStoriesList and dataList
-        userStoriesList.setItems(FXCollections.observableArrayList(logs));
+        userStoriesList.setItems(FXCollections.observableArrayList(Log_DataStructure.getLogs()));
         userStoriesList.setCellFactory(new LogEntryCellFactory());
+        
+        dataList.setItems(FXCollections.observableArrayList(Log_DataStructure.getHistoricalLogs()));
         dataList.setCellFactory(new LogEntryCellFactory());
     }
 }

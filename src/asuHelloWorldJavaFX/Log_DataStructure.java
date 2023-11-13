@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Log_DataStructure {
     private static List<LogEntry> logs = new ArrayList<>();
+    private static List<LogEntry> historicalLogs = new ArrayList<>();
 
     public static void createLog(String project, String lifeCycle, String effortCategory, String typeOfEffort) {
         int number = 0;
@@ -15,9 +16,23 @@ public class Log_DataStructure {
         logs.add(logEntry);
 
     }
+    
+    public static void updateLog(int userStoryPoints) {
+      LogEntry firstLog = logs.get(0);
+      firstLog.setStoryPoints(userStoryPoints);
+
+      // Remove the first log entry from the list
+      logs.remove(0);
+      
+      historicalLogs.add(firstLog);
+    }
 
     public static List<LogEntry> getLogs() {
         return new ArrayList<>(logs);
+    }
+    
+    public static List<LogEntry> getHistoricalLogs() {
+        return new ArrayList<>(historicalLogs);
     }
 
     // log entry
