@@ -10,7 +10,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class planningPoker extends Stage {
     @FXML
@@ -21,6 +23,10 @@ public class planningPoker extends Stage {
     private TextField userStoryPointText;
     @FXML
     private Button updateButton;
+    @FXML
+    private Button searchButton;
+    @FXML
+    private TextField searchPhraseText;
 
     public planningPoker() {
         try {
@@ -35,7 +41,7 @@ public class planningPoker extends Stage {
                 List<Log_DataStructure.LogEntry> logs = Log_DataStructure.getLogs();
                 userStoriesList.setItems(FXCollections.observableArrayList(logs));
                 userStoriesList.setCellFactory(new LogEntryCellFactory());
-                
+
                 List<Log_DataStructure.LogEntry> historicalData = Log_DataStructure.getHistoricalLogs();
                 dataList.setItems(FXCollections.observableArrayList(historicalData));
                 dataList.setCellFactory(new LogEntryCellFactory());
@@ -43,6 +49,7 @@ public class planningPoker extends Stage {
 
             // Add event handler for updateButton
             updateButton.setOnAction(event -> updateDataList());
+            searchButton.setOnAction(event -> searchFunction());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,24 +71,46 @@ public class planningPoker extends Stage {
         // Update the story points for the first log entry
         List<Log_DataStructure.LogEntry> logs = Log_DataStructure.getLogs();
         if (!logs.isEmpty()) {
-//            Log_DataStructure.LogEntry firstLog = logs.get(0);
-//            firstLog.setStoryPoints(userStoryPoints);
-//
-//            // Move the first log entry from userStoriesList to dataList
-//            userStoriesList.getItems().remove(firstLog);
-//            dataList.getItems().add(firstLog);
-//
-//            // Remove the first log entry from the list
-//            logs.remove(0);
-        	
-        	Log_DataStructure.updateLog(userStoryPoints);
+            Log_DataStructure.updateLog(userStoryPoints);
         }
 
         // Refresh userStoriesList and dataList
         userStoriesList.setItems(FXCollections.observableArrayList(Log_DataStructure.getLogs()));
         userStoriesList.setCellFactory(new LogEntryCellFactory());
-        
+
         dataList.setItems(FXCollections.observableArrayList(Log_DataStructure.getHistoricalLogs()));
+        dataList.setCellFactory(new LogEntryCellFactory());
+    }
+
+    private void searchFunction() {
+        // Get the input from userStoryPointText
+        String userSearchPhrase = searchPhraseText.getText().trim().toLowerCase();
+
+        List<Log_DataStructure.LogEntry> histData = Log_DataStructure.getHistoricalLogs();
+        if (histData.isEmpty()) {
+            return;
+        }
+
+        List<Log_DataStructure.LogEntry> filteredHistData = new ArrayList<>();
+        for (Log_DataStructure.LogEntry entry : histData) {
+        	if (entry.getProject().toLowerCase().contains(userSearchPhrase) ||
+                    entry.getLifeCycle().toLowerCase().contains(userSearchPhrase) ||
+                    entry.getEffortCategory().toLowerCase().contains(userSearchPhrase) ||
+                    entry.getTypeOfEffort().toLowerCase().contains(userSearchPhrase)) {
+                    filteredHistData.add(entry);
+                }
+        }
+
+        // Print filteredHistData
+        for (Log_DataStructure.LogEntry entry : filteredHistData) {
+            System.out.println(entry.getProject());
+        }
+
+        // Refresh userStoriesList and dataList
+        userStoriesList.setItems(FXCollections.observableArrayList(Log_DataStructure.getLogs()));
+        userStoriesList.setCellFactory(new LogEntryCellFactory());
+
+        dataList.setItems(FXCollections.observableArrayList(filteredHistData));
         dataList.setCellFactory(new LogEntryCellFactory());
     }
 }
