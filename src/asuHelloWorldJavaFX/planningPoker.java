@@ -93,12 +93,12 @@ public class planningPoker extends Stage {
 
         List<Log_DataStructure.LogEntry> filteredHistData = new ArrayList<>();
         for (Log_DataStructure.LogEntry entry : histData) {
-        	if (entry.getProject().toLowerCase().contains(userSearchPhrase) ||
+            if (entry.getProject().toLowerCase().contains(userSearchPhrase) ||
                     entry.getLifeCycle().toLowerCase().contains(userSearchPhrase) ||
                     entry.getEffortCategory().toLowerCase().contains(userSearchPhrase) ||
                     entry.getTypeOfEffort().toLowerCase().contains(userSearchPhrase)) {
-                    filteredHistData.add(entry);
-                }
+                filteredHistData.add(entry);
+            }
         }
 
         // Print filteredHistData

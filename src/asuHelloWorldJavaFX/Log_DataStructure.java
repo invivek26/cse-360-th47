@@ -16,21 +16,21 @@ public class Log_DataStructure {
         logs.add(logEntry);
 
     }
-    
-    public static void updateLog(int userStoryPoints) {
-      LogEntry firstLog = logs.get(0);
-      firstLog.setStoryPoints(userStoryPoints);
 
-      // Remove the first log entry from the list
-      logs.remove(0);
-      
-      historicalLogs.add(firstLog);
+    public static void updateLog(int userStoryPoints) {
+        LogEntry firstLog = logs.get(0);
+        firstLog.setStoryPoints(userStoryPoints);
+
+        // Remove the first log entry from the list
+        logs.remove(0);
+
+        historicalLogs.add(firstLog);
     }
 
     public static List<LogEntry> getLogs() {
         return new ArrayList<>(logs);
     }
-    
+
     public static List<LogEntry> getHistoricalLogs() {
         return new ArrayList<>(historicalLogs);
     }
@@ -44,10 +44,13 @@ public class Log_DataStructure {
         private int number;
 
         public LogEntry(String project, String lifeCycle, String effortCategory, String typeOfEffort, int number) {
+
+        public LogEntry(String project, String lifeCycle, String effortCategory, String typeOfEffort, int number) {
             this.project = project;
             this.lifeCycle = lifeCycle;
             this.effortCategory = effortCategory;
             this.typeOfEffort = typeOfEffort;
+            this.number = number;
             this.number = number;
         }
 
