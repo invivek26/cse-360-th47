@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
@@ -19,9 +20,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class planningPoker extends Stage {
-    
-	ObservableList<String> listview = FXCollections.observableArrayList("High->low Poker Points","Low->High Poker Points","ProjectType","ProjectLifeCycle","ProjectEffortCategory","ProjectDeliverables");
-	@FXML
+
+    ObservableList<String> listview = FXCollections.observableArrayList("High->low Poker Points",
+            "Low->High Poker Points", "ProjectType", "ProjectLifeCycle", "ProjectEffortCategory",
+            "ProjectDeliverables");
+    @FXML
     private ListView<Log_DataStructure.LogEntry> userStoriesList;
     @FXML
     private ListView<Log_DataStructure.LogEntry> dataList;
@@ -32,21 +35,21 @@ public class planningPoker extends Stage {
     @FXML
     private Button searchButton;
     @FXML
-    private ChoiceBox sortButton ;
+    private ChoiceBox sortButton;
+
     @FXML
-    private void initialize(){
-    	
-    	sortButton.setItems(listview);
-    	
-    	
-    	
+    private void initialize() {
+
+        sortButton.setItems(listview);
+
     };
+    @FXML
     private TextField searchPhraseText;
 
     public planningPoker() {
         try {
             // Load FXML file for the Planning Poker screen
-	    FXMLLoader loader = new FXMLLoader(getClass().getResource("/PokerScreen.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/PokerScreen.fxml"));
             loader.setController(this);
             Parent root = loader.load();
             Scene adminScene = new Scene(root, 750, 500);
@@ -62,13 +65,18 @@ public class planningPoker extends Stage {
                 dataList.setItems(FXCollections.observableArrayList(historicalData));
                 dataList.setCellFactory(new LogEntryCellFactory());
             });
+            searchPhraseText.setPromptText("Search...");
+
+            searchPhraseText.textProperty().addListener((observable, oldValue, newValue) -> {
+                // Call the search function whenever the text changes
+                searchFunction(newValue);
+            });
 
             // Add event handler for updateButton
             updateButton.setOnAction(event -> updateDataList());
-            searchButton.setOnAction(event -> searchFunction());
             sortButton.setOnAction(event -> sortFunction());
 
-	// catches exception 
+            // catches exception
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -100,79 +108,80 @@ public class planningPoker extends Stage {
         dataList.setCellFactory(new LogEntryCellFactory());
     }
 
-    private void searchFunction() {
-        // Get the input from userStoryPointText
-        String userSearchPhrase = searchPhraseText.getText().trim().toLowerCase();
+    private void refreshLists(List<Log_DataStructure.LogEntry> userStories,
+            List<Log_DataStructure.LogEntry> historicalData) {
+        userStoriesList.setItems(FXCollections.observableArrayList(userStories));
+        userStoriesList.setCellFactory(new LogEntryCellFactory());
+
+        dataList.setItems(FXCollections.observableArrayList(historicalData));
+        if (historicalData.isEmpty()) {
+            showAlert("No Results found!!!");
+            return;
+        }
+        dataList.setCellFactory(new LogEntryCellFactory());
+    }
+
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void searchFunction(String userSearchPhrase) {
+        String userSearchPhraseCleaned = userSearchPhrase.trim().toLowerCase();
 
         List<Log_DataStructure.LogEntry> histData = Log_DataStructure.getHistoricalLogs();
+
         if (histData.isEmpty()) {
+            showAlert("No Results found!!!");
             return;
         }
 
-	// create new filtered list for historical data
-        List<Log_DataStructure.LogEntry> filteredHistData = new ArrayList<>();
-        for (Log_DataStructure.LogEntry entry : histData) {
-            if (entry.getProject().toLowerCase().contains(userSearchPhrase) ||
-                    entry.getLifeCycle().toLowerCase().contains(userSearchPhrase) ||
-                    entry.getEffortCategory().toLowerCase().contains(userSearchPhrase) ||
-                    entry.getTypeOfEffort().toLowerCase().contains(userSearchPhrase)) {
-                filteredHistData.add(entry);
-            }
-        }
-
-        // Print filteredHistData
-        for (Log_DataStructure.LogEntry entry : filteredHistData) {
-            System.out.println(entry.getProject());
-        }
+        List<Log_DataStructure.LogEntry> filteredHistData = histData.stream()
+                .filter(entry -> entry.matchesSearch(userSearchPhraseCleaned))
+                .collect(Collectors.toList());
 
         // Refresh userStoriesList and dataList
-        userStoriesList.setItems(FXCollections.observableArrayList(Log_DataStructure.getLogs()));
-        userStoriesList.setCellFactory(new LogEntryCellFactory());
-
-        dataList.setItems(FXCollections.observableArrayList(filteredHistData));
-        dataList.setCellFactory(new LogEntryCellFactory());
+        refreshLists(Log_DataStructure.getLogs(), FXCollections.observableArrayList(filteredHistData));
     }
+
     private void sortFunction() {
-    	
-    	String selectedOption = (String) sortButton.getValue();
-    	
-    	List<Log_DataStructure.LogEntry> histData = Log_DataStructure.getHistoricalLogs();
-    	
-    
+
+        String selectedOption = (String) sortButton.getValue();
+
+        List<Log_DataStructure.LogEntry> histData = Log_DataStructure.getHistoricalLogs();
+
         if ("Low->High Poker Points".equals(selectedOption)) {
             // Sort poker points low to high
-        	Collections.sort(histData,Comparator.comparing(Log_DataStructure.LogEntry::getStoryValue));
-        	dataList.getItems().setAll(histData);
-        	
+            Collections.sort(histData, Comparator.comparing(Log_DataStructure.LogEntry::getStoryValue));
+            dataList.getItems().setAll(histData);
+
         } else if ("High->low Poker Points".equals(selectedOption)) {
-        	
-        	Collections.sort(histData, Comparator.comparing(Log_DataStructure.LogEntry::getStoryValue).reversed());
+
+            Collections.sort(histData, Comparator.comparing(Log_DataStructure.LogEntry::getStoryValue).reversed());
             dataList.getItems().setAll(histData);
-        	
-        }
-        else if ("ProjectType".equals(selectedOption)) {
-        	
-        	Collections.sort(histData, Comparator.comparing(Log_DataStructure.LogEntry::getProject));
+
+        } else if ("ProjectType".equals(selectedOption)) {
+
+            Collections.sort(histData, Comparator.comparing(Log_DataStructure.LogEntry::getProject));
             dataList.getItems().setAll(histData);
-        	
-        }
-        else if ("ProjectLifeCycle".equals(selectedOption)) {
-        	
-        	Collections.sort(histData, Comparator.comparing(Log_DataStructure.LogEntry::getLifeCycle));
+
+        } else if ("ProjectLifeCycle".equals(selectedOption)) {
+
+            Collections.sort(histData, Comparator.comparing(Log_DataStructure.LogEntry::getLifeCycle));
             dataList.getItems().setAll(histData);
-        	
-        }
-        else if ("ProjectEffortCategory".equals(selectedOption)) {
-        	
-        	Collections.sort(histData, Comparator.comparing(Log_DataStructure.LogEntry::getEffortCategory));
+
+        } else if ("ProjectEffortCategory".equals(selectedOption)) {
+
+            Collections.sort(histData, Comparator.comparing(Log_DataStructure.LogEntry::getEffortCategory));
             dataList.getItems().setAll(histData);
-        	
-        }
-        else if ("ProjectDeliverables".equals(selectedOption)) {
-        	
-        	Collections.sort(histData, Comparator.comparing(Log_DataStructure.LogEntry::getTypeOfEffort));
+
+        } else if ("ProjectDeliverables".equals(selectedOption)) {
+
+            Collections.sort(histData, Comparator.comparing(Log_DataStructure.LogEntry::getTypeOfEffort));
             dataList.getItems().setAll(histData);
-        	
+
         }
     }
 }

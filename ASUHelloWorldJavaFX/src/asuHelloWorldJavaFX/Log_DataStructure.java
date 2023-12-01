@@ -26,11 +26,13 @@ public class Log_DataStructure {
 
         historicalLogs.add(firstLog);
     }
-    //getting logs 
+
+    // getting logs
     public static List<LogEntry> getLogs() {
         return new ArrayList<>(logs);
     }
-    //getting log for historical data
+
+    // getting log for historical data
     public static List<LogEntry> getHistoricalLogs() {
         return new ArrayList<>(historicalLogs);
     }
@@ -50,6 +52,13 @@ public class Log_DataStructure {
             this.typeOfEffort = typeOfEffort;
             this.number = number;
             this.number = number;
+        }
+
+        public boolean matchesSearch(String searchPhrase) {
+            return project.toLowerCase().contains(searchPhrase) ||
+                    lifeCycle.toLowerCase().contains(searchPhrase) ||
+                    effortCategory.toLowerCase().contains(searchPhrase) ||
+                    (typeOfEffort != null && typeOfEffort.toLowerCase().contains(searchPhrase));
         }
 
         // getter methods

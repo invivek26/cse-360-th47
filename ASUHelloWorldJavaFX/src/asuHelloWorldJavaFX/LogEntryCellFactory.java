@@ -1,9 +1,11 @@
 package asuHelloWorldJavaFX;
+
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
 
-public class LogEntryCellFactory implements Callback<ListView<Log_DataStructure.LogEntry>, ListCell<Log_DataStructure.LogEntry>> {
+public class LogEntryCellFactory
+        implements Callback<ListView<Log_DataStructure.LogEntry>, ListCell<Log_DataStructure.LogEntry>> {
 
     @Override
     public ListCell<Log_DataStructure.LogEntry> call(ListView<Log_DataStructure.LogEntry> listView) {
@@ -16,7 +18,10 @@ public class LogEntryCellFactory implements Callback<ListView<Log_DataStructure.
                     setText(null);
                 } else {
                     // Customize the display of each log entry here
-                    String displayText = "UserStoryPoints: "+ log.getStoryValue() +" Project: " + log.getProject() + ", LifeCycle: " + log.getLifeCycle() + "Effort Category: " + log.getEffortCategory();
+                    String displayText = String.format(
+                            "Project: %s, LifeCycle: %s, Effort Category: %s, Type of Effort: %s, User Story Points: %d",
+                            log.getProject(), log.getLifeCycle(), log.getEffortCategory(), log.getTypeOfEffort(),
+                            log.getStoryValue());
                     setText(displayText);
                 }
             }
