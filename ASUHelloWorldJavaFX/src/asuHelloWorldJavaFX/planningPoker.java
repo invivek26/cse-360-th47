@@ -43,6 +43,7 @@ public class planningPoker extends Stage {
         sortButton.setItems(listview);
 
     };
+
     @FXML
     private TextField searchPhraseText;
 
@@ -183,5 +184,8 @@ public class planningPoker extends Stage {
             dataList.getItems().setAll(histData);
 
         }
+
+        refreshLists(histData, FXCollections.observableArrayList(histData));
+
     }
 }

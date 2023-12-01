@@ -52,8 +52,7 @@ public class UserDatabase {
 
 				String id = infos[0];
 				String pass = infos[1];
-				 
-				
+
 				if (id.equals(userName) && toHexString(getSHA(password)).equals(pass)) {
 					return true;
 				}
