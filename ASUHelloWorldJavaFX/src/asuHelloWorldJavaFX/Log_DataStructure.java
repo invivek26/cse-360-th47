@@ -26,11 +26,11 @@ public class Log_DataStructure {
 
         historicalLogs.add(firstLog);
     }
-
+    //getting logs 
     public static List<LogEntry> getLogs() {
         return new ArrayList<>(logs);
     }
-
+    //getting log for historical data
     public static List<LogEntry> getHistoricalLogs() {
         return new ArrayList<>(historicalLogs);
     }
