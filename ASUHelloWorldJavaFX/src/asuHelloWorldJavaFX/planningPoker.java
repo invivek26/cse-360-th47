@@ -45,7 +45,8 @@ public class planningPoker extends Stage {
 
     public planningPoker() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/PokerScreen.fxml"));
+            // Load FXML file for the Planning Poker screen
+	    FXMLLoader loader = new FXMLLoader(getClass().getResource("/PokerScreen.fxml"));
             loader.setController(this);
             Parent root = loader.load();
             Scene adminScene = new Scene(root, 750, 500);
@@ -67,6 +68,7 @@ public class planningPoker extends Stage {
             searchButton.setOnAction(event -> searchFunction());
             sortButton.setOnAction(event -> sortFunction());
 
+	// catches exception 
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -107,6 +109,7 @@ public class planningPoker extends Stage {
             return;
         }
 
+	// create new filtered list for historical data
         List<Log_DataStructure.LogEntry> filteredHistData = new ArrayList<>();
         for (Log_DataStructure.LogEntry entry : histData) {
             if (entry.getProject().toLowerCase().contains(userSearchPhrase) ||
@@ -171,12 +174,5 @@ public class planningPoker extends Stage {
             dataList.getItems().setAll(histData);
         	
         }
-        
-        
-    	
-    	
-    	
-    	
-    	
     }
 }
