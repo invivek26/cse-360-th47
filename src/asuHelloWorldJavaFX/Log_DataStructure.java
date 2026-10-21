@@ -44,8 +44,6 @@ public class Log_DataStructure {
         private int number;
 
         public LogEntry(String project, String lifeCycle, String effortCategory, String typeOfEffort, int number) {
-
-        public LogEntry(String project, String lifeCycle, String effortCategory, String typeOfEffort, int number) {
             this.project = project;
             this.lifeCycle = lifeCycle;
             this.effortCategory = effortCategory;
